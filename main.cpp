@@ -9,33 +9,72 @@ public:
 
     class Element {
     public:
+        Element(float _value)
+            : value(_value) { }
+        Element(int _col, int _row, float _value)
+            : value(_value), col(_col), row(_row) { }
+
         int col;
         int row;
         float value;
     };
 
-    Matrix(int x, int y)
-    : rows(y)
-    , cols(x) {
+    Matrix(int _cols, int _rows)
+    : rows(_rows), cols(_cols) {
         for (int i = 0; i < cols; i++) { matrix.push_back(vector<float>(rows)); }
+    }
+
+    Matrix(int _cols, int _rows, string path) : Matrix(_cols, _rows) {
+        scanFromFile(path);
     }
 
     ~Matrix() {}
 
-    void setElement(Element el) {
+    void  setElement(Element el) {
         if (isIndexesOk(el)) { matrix[el.col][el.row] = el.value; }
     }
-
     float getElement(Element el) {
         if (isIndexesOk(el)) { return matrix[el.col][el.row]; }
     }
 
+    int getCols() { return cols; }
+    int getRows() { return rows; }
+
+    float calcSquareSum(int vSize, int hSize, Element centralEl) {
+        float sum = 0;
+        for (int i = centralEl.row - vSize/2; i <= centralEl.row + vSize/2;) {
+            sum += calcRowSum(vSize, hSize, matrix[centralEl.col][i]);
+        }
+        return sum;
+    }
+
+    void scanFromFile(string path) {
+        fstream fb(path);
+        if (fb.is_open()) {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+                    fb << matrix[i][j];
+                }
+            }
+        }
+    }
+
+    void print() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                cout << matrix[i][j] << " ";
+            }
+        }
+        cout << endl;
+    }
+
+private:
     float calcRowSum(int vSize, int hSize, Element centralEl) {
         if (!isIndexesOk(centralEl)) { return -1; }
         if (!isFrameOk(vSize, hSize, centralEl)) { return -1; }
 
         float sum = 0;
-        for (int i = centralEl.col - hSize/2; i < centralEl.col + hSize/2; i++) {
+        for (int i = centralEl.col - hSize/2; i <= centralEl.col + hSize/2; i++) {
             sum += matrix[i][centralEl.row];
         }
         return sum;
@@ -46,16 +85,12 @@ public:
         if (!isFrameOk(vSize, hSize, centralEl)) { return -1; }
 
         float sum = 0;
-        for (int i = centralEl.row - vSize/2; i < centralEl.row + vSize/2; i++) {
+        for (int i = centralEl.row - vSize/2; i <= centralEl.row + vSize/2; i++) {
             sum += matrix[centralEl.col][i];
         }
         return sum;
     }
 
-    int getCols() { return cols; }
-    int getRows() { return rows; }
-
-private:
     bool isFrameOk(int vSize, int hSize, Element centralEl) {
         if (centralEl.row - vSize /2 < 0)       { return false; }
         if (centralEl.row + vSize /2 >= rows)   { return false; }
@@ -75,18 +110,26 @@ private:
 };
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    std::cout << "Hello, Vector!" << std::endl;
+    int i = 9;
+
+
     return 0;
 }
 
 
 void generateMatrix() {
     float arr[] = {
-            35.34, 35.52, 54.34, 45.34, 35.34, 76.34, 34.34, 67.34,35.34, 67.34, 87.23, 19.33,
-            35.34, 43.52, 37.34, 32.34, 68.34, 34.34, 23.34, 43.34,15.34, 86.34, 67.23, 76.33,
-            561.11, 385.55, 564.22, 485.43, 67.67, 67.80, 32.34, 32.34,43.34, 65.34, 87.23, 54.33,
-            561.11, 385.55, 564.22, 485.43, 67.67, 67.80, 32.34, 32.34,43.34, 65.34, 87.23, 54.33,
-            76.3, 99.2, 106.5
+            10.1,10.1, 10.1, 10.1, 10.1,
+            10.1,10.1, 10.1,10.1, 10.1,
+            10.1,10.1,10.1,10.1,10.1,
+            10.1,10.1,10.1,10.1,10.1,
+            10.1,10.1,10.1,10.1,10.1,
+            10.1,10.1,10.1,10.1,10.1,
+            10.1,10.1,10.1,10.1,10.1,
+            10.1,10.1,10.1,10.1,10.1,
+            10.1,10.1,10.1,10.1,10.1,
+            10.1,10.1,10.1,10.1,10.1,
     };
 
     ofstream fb("data.bin");

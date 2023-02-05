@@ -9,23 +9,18 @@ public:
 
     class Element {
     public:
-        int row;
         int col;
+        int row;
         float value;
     };
 
     Matrix(int x, int y)
     : rows(y)
-    , cols(x)
-    {
-        for (int i = 0; i < cols; i++) {
-            matrix.push_back(vector<float>(rows));
-        }
+    , cols(x) {
+        for (int i = 0; i < cols; i++) { matrix.push_back(vector<float>(rows)); }
     }
 
-    ~Matrix() {
-
-    }
+    ~Matrix() {}
 
     void setElement(Element el) {
         if (isIndexesOk(el)) { matrix[el.col][el.row] = el.value; }
@@ -35,17 +30,40 @@ public:
         if (isIndexesOk(el)) { return matrix[el.col][el.row]; }
     }
 
-    float calcRowSum(int leftBorder, int rightBorder, Element el) {
+    float calcRowSum(int vSize, int hSize, Element centralEl) {
+        if (!isIndexesOk(centralEl)) { return -1; }
+        if (!isFrameOk(vSize, hSize, centralEl)) { return -1; }
 
+        float sum = 0;
+        for (int i = centralEl.col - hSize/2; i < centralEl.col + hSize/2; i++) {
+            sum += matrix[i][centralEl.row];
+        }
+        return sum;
     }
 
-    float calcColSum() {
+    float calcColSum(int vSize, int hSize, Element centralEl) {
+        if (!isIndexesOk(centralEl)) { return -1; }
+        if (!isFrameOk(vSize, hSize, centralEl)) { return -1; }
 
+        float sum = 0;
+        for (int i = centralEl.row - vSize/2; i < centralEl.row + vSize/2; i++) {
+            sum += matrix[centralEl.col][i];
+        }
+        return sum;
     }
 
     int getCols() { return cols; }
     int getRows() { return rows; }
+
 private:
+    bool isFrameOk(int vSize, int hSize, Element centralEl) {
+        if (centralEl.row - vSize /2 < 0)       { return false; }
+        if (centralEl.row + vSize /2 >= rows)   { return false; }
+        if (centralEl.col - hSize /2 < 0)       { return false; }
+        if (centralEl.col + hSize /2 >= cols)   { return false; }
+        return true;
+    }
+
     bool isIndexesOk(Element el) {
         if (el.col < cols && el.row < rows) { return true; }
         else { return false; }

@@ -1,4 +1,60 @@
 #include <iostream>
+#include <vector>
+#include <fstream>
+
+using namespace std;
+
+class Matrix {
+public:
+
+    class Element {
+    public:
+        int row;
+        int col;
+        float value;
+    };
+
+    Matrix(int x, int y)
+    : rows(y)
+    , cols(x)
+    {
+        for (int i = 0; i < cols; i++) {
+            matrix.push_back(vector<float>(rows));
+        }
+    }
+
+    ~Matrix() {
+
+    }
+
+    void setElement(Element el) {
+        if (isIndexesOk(el)) { matrix[el.col][el.row] = el.value; }
+    }
+
+    float getElement(Element el) {
+        if (isIndexesOk(el)) { return matrix[el.col][el.row]; }
+    }
+
+    float calcRowSum(int leftBorder, int rightBorder, Element el) {
+
+    }
+
+    float calcColSum() {
+
+    }
+
+    int getCols() { return cols; }
+    int getRows() { return rows; }
+private:
+    bool isIndexesOk(Element el) {
+        if (el.col < cols && el.row < rows) { return true; }
+        else { return false; }
+    }
+
+    int cols, rows;
+    vector<vector<float>> matrix;
+
+};
 
 int main() {
     std::cout << "Hello, World!" << std::endl;
